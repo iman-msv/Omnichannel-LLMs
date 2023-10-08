@@ -2,10 +2,11 @@
 import pandas as pd
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from collections import Counter
+from gensim.corpora.dictionary import Dictionary
+from gensim.models.tfidfmodel import TfidfModel
 
 # Import CSV file
 '''
@@ -59,11 +60,11 @@ billboard_count = Counter(word_tokenize(joined_billboard_words))
 print(sorted(billboard_count.items(), key= lambda x: x[1], reverse=True))
 
 # Text preprocessing
-tokens = [token for token in word_tokenize(joined_billboard_words.lower()) if token.isalpha()]
-no_stops = [nos_token for nos_token in tokens if nos_token not in stopwords.words('english')]
+billboard_tokens = [token for token in word_tokenize(joined_billboard_words.lower()) if token.isalpha()]
+billboard_no_stops = [nos_token for nos_token in billboard_tokens if nos_token not in stopwords.words('english')]
 
 # Wordcloud
-cloud_billboard = WordCloud().generate(' '.join(no_stops))
+cloud_billboard = WordCloud().generate(' '.join(billboard_no_stops))
 plt.imshow(cloud_billboard, interpolation='bilinear')
 plt.show()
 
@@ -81,3 +82,48 @@ def word_count(sentences):
 word_count(chatgpt['billboard'])
 word_count(chatgpt['website'])
 word_count(chatgpt['salesman'])
+
+# Tf-idf
+billboard_tokens = [word_tokenize(doc.lower()) for doc in chatgpt['billboard'].str.lower().to_list()]
+billboard_dict = Dictionary(billboard_tokens)
+
+corpus = [billboard_dict.doc2bow(doc) for doc in billboard_tokens]
+print(corpus)
+
+# Instantiate Tfidf
+tfidf = TfidfModel(corpus)
+
+# Checking Tfidf
+max_tfidfs = []
+for i in range(len(corpus)):
+    max_tfidfs.append(max(tfidf[corpus[i]], key = lambda x: x[1]))
+
+sorted_tfidfs = sorted(max_tfidfs,  key = lambda x: x[1], reverse=True)
+sorted_ids = [id for id in sorted_tfidfs]
+
+token_id_to_token = {token_id: token for token, token_id in billboard_dict.token2id.items()}
+tokens_with_tfidf = [(token_id_to_token[token_id], tfidf_value) for token_id, tfidf_value in sorted_tfidfs]
+
+# TFIDF Function 
+def tfidf_func(sentences):
+    # Tokenizing
+    tokens = [word_tokenize(doc.lower()) for doc in sentences.str.lower().to_list()]
+    # Gensim Dict
+    dict = Dictionary(billboard_tokens)
+    # Corpus Creation
+    corpus = [billboard_dict.doc2bow(doc) for doc in billboard_tokens]
+    #Instantiate TFIDF
+    tfidf = TfidfModel(corpus)
+    # Words with Maximum TFIDF
+    max_tfidfs = []
+    for i in range(len(corpus)):
+        max_tfidfs.append(max(tfidf[corpus[i]], key = lambda x: x[1]))
+
+    # Sorting with respect to TFIDF
+    sorted_tfidfs = sorted(max_tfidfs,  key = lambda x: x[1], reverse=True)
+
+    # ID to Token
+    token_id_to_token = {token_id: token for token, token_id in billboard_dict.token2id.items()}
+    tokens_with_tfidf = [(token_id_to_token[token_id], tfidf_value) for token_id, tfidf_value in sorted_tfidfs]
+    
+    return tokens_with_tfidf

@@ -7,6 +7,7 @@ from nltk.corpus import stopwords
 from collections import Counter
 from gensim.corpora.dictionary import Dictionary
 from gensim.models.tfidfmodel import TfidfModel
+import spacy
 
 # Import CSV file
 '''
@@ -84,34 +85,14 @@ word_count(chatgpt['website'])
 word_count(chatgpt['salesman'])
 
 # Tf-idf
-billboard_tokens = [word_tokenize(doc.lower()) for doc in chatgpt['billboard'].str.lower().to_list()]
-billboard_dict = Dictionary(billboard_tokens)
-
-corpus = [billboard_dict.doc2bow(doc) for doc in billboard_tokens]
-print(corpus)
-
-# Instantiate Tfidf
-tfidf = TfidfModel(corpus)
-
-# Checking Tfidf
-max_tfidfs = []
-for i in range(len(corpus)):
-    max_tfidfs.append(max(tfidf[corpus[i]], key = lambda x: x[1]))
-
-sorted_tfidfs = sorted(max_tfidfs,  key = lambda x: x[1], reverse=True)
-sorted_ids = [id for id in sorted_tfidfs]
-
-token_id_to_token = {token_id: token for token, token_id in billboard_dict.token2id.items()}
-tokens_with_tfidf = [(token_id_to_token[token_id], tfidf_value) for token_id, tfidf_value in sorted_tfidfs]
-
 # TFIDF Function 
 def tfidf_func(sentences):
     # Tokenizing
     tokens = [word_tokenize(doc.lower()) for doc in sentences.str.lower().to_list()]
     # Gensim Dict
-    dict = Dictionary(billboard_tokens)
+    dict = Dictionary(tokens)
     # Corpus Creation
-    corpus = [billboard_dict.doc2bow(doc) for doc in billboard_tokens]
+    corpus = [dict.doc2bow(doc) for doc in tokens]
     #Instantiate TFIDF
     tfidf = TfidfModel(corpus)
     # Words with Maximum TFIDF
@@ -123,7 +104,22 @@ def tfidf_func(sentences):
     sorted_tfidfs = sorted(max_tfidfs,  key = lambda x: x[1], reverse=True)
 
     # ID to Token
-    token_id_to_token = {token_id: token for token, token_id in billboard_dict.token2id.items()}
+    token_id_to_token = {token_id: token for token, token_id in dict.token2id.items()}
     tokens_with_tfidf = [(token_id_to_token[token_id], tfidf_value) for token_id, tfidf_value in sorted_tfidfs]
     
     return tokens_with_tfidf
+
+tfidf_func(chatgpt['billboard'])
+tfidf_func(chatgpt['website'])
+tfidf_func(chatgpt['salesman'])
+
+# Similarity
+nlp = spacy.load("en_core_web_sm")
+def calculate_column_similarity(column1, column2):
+    doc1 = nlp(" ".join(column1))
+    doc2 = nlp(" ".join(column2))
+    return doc1.similarity(doc2)
+
+calculate_column_similarity(chatgpt['billboard'], chatgpt['website'])
+calculate_column_similarity(chatgpt['billboard'], chatgpt['salesman'])
+calculate_column_similarity(chatgpt['website'], chatgpt['salesman'])

@@ -1,0 +1,78 @@
+---
+title: "The Path Toward Omni-channel Retailing: How Large Language Model Facilitates the Process"
+abstract: |
+  Retail formats have been evolving since its early inception that were  comprised of mere simple acitivities. Omni-channel retailing is, undoubtedly, the most recent format attempting to provide a consistant, integrated customer experience across different channels, including online and offline ones. In this article, the challenges commonly arise in the path towards omnichannel retailers are pointed out and the role of Aritificial Intelligence as a solution is explored deeply. Specifically, we will concentrate on Large Language Models, a type of Generative AI, to assess whether they have the ability to produce consistent advertising messages and convey characteristics of the retailer or not. 
+keywords: 
+  - retailing
+  - omnichannel retailing
+  - generative ai
+  - large language models
+  - natural language processing
+bibliography: "https://api.citedrive.com/bib/45ed9c35-1341-4f53-ae0b-9bd087b2ebcd/references.bib?x=eyJpZCI6ICI0NWVkOWMzNS0xMzQxLTRmNTMtYWUwYi05YmQwODdiMmViY2QiLCAidXNlciI6ICIzNzQ2IiwgInNpZ25hdHVyZSI6ICI4YmYxNmFiZjZjNzdjYjExYWRhNGVmNjNhZGQ0OWU2NGE3OGY5NjAzMzQwN2ZhMDZiZmI0ZDFlZDA4MDQwMjljIn0=/bibliography.bib"
+format: pdf
+---
+
+## Introduction
+  The concept of omni-channel retailing is not limited to recent years, but due to the new technologies and emerged tools, a large proportion of retailers have adopted such a strategy. More than a decade ago the term "omni-channel" appeared as a way of interaction with the retailer through which the customer feels consistent regardless of what channel the customer is using [@Rigbi2011]. The number of papers with a topic related to omni-channel has an upward trending in various journals [@Cai_2020], but various challenges inherent in the path toward integrated and consistent experience demands additional endeavors. 
+
+  A channel represents any contact point or medium that a customer and the firm can interact with each other [@Neslin_2006]. One of the accepted definitions of omni-channel management is "the synergetic management of the numerous available channels and customer touchpoints, in such a way that the customer experience across channels and the performance over channels are optimized" [@Verhoef_2015]. In other words, customers feel a seamless experience across offline and online channels of a particular retailer [@Bhatnagar_2004]. Omni-channel, however, is not the same as multi-channel (or multiple channel) due to lack of synergy or even cross-channel, which doesn't meet the level of required integration.
+
+The transition phases toward channel integration and creating a seamless customer experience on different channels raises some serious challenges requiring appropriate management and tools. Technology, and in specific, Artificial Intelligence (AI) has multitude capabilities that would smooth the process and result in a omni-channel retailing with the necessary level of integration. This article seeks to reveal the prospective solutions of Large Language Models (LLMs) to the problems and challenges arisen in the way of integrating retail channels. 
+
+## Literature Review
+Retailing has been materialized in different formats from the past to the present. Such formats are designed in a way that makes customers feel satisfied and ready to buy. It's a good idea to take purchase stages into account to have a big picture of customers journey. One of the possibilities is the one [@Gauri_2021] proposed as a four step procedure; information search, purchase, acquisition, and returns. 
+
+Customers may opt for one identical channel or a combination of separate channels completing stages stated earlier. For example, some customers want to search offline and buy online, widely known as showrooming [@Ailawadi_2017] or choose whatever they'd like to buy and collect at specific locations, known as click-and-collect [@Weltevreden_2008]. Even more complicated, one can place his/her order in one channel (e.g. on a smartphone), get the order via another channel (e.g. home delivery), and return it in case of fallacy through third channel (e.g. physical store) [@Kembro_2018]. Each channel has its own merits and retailers would be better off if they could reap the benefits and alleviate the disadvantages of each channel. 
+
+Omnichannel retailing is capable to not only accomplish such an objective but creates a synergy among channels that contributes to the effectiveness. [@Wang_2017] studied impacts of online and offline channels on each other empirically. An online channel, for example, would earn more if it establishes an offline store where its presence is not considerable. Additionally, marketing communication is one of potentials for the complementary effects. The main contribution of the article is detection of a mechanism under which marketing communications drive complementarity. Here, a source of synergy is the way informative advertisements by stores generates more sales for online channel. 
+
+Focusing on the strategy, [@Zhang_2010] was one of the first studies that investigated the unexploited opportunities inherent in managing multiple channels. More recently, [@Shen_2018] attempted to explore the drivers of such an integrated and consistent shopping experience and suggested channel integration quality influences perceived fluency across channels. It's notable that channel integration quality in that article is comprised of channel choice breadth, channel service transparency, content consistency, and process consistency.  
+
+### Operations and Logistics
+Researchers investigated deeply some aspects of omnichannel strategy before, but the domain of supply chain management and inventory management haven't discussed to the same extend yet [@Cai_2020]. Warehouse operations and designs, specifically, requires studies that concentrate on omnichannel characteristics [@Kembro_2018].  
+
+On-time delivery can make a difference in retailing industry. [@de_Kervenoael_2015] collected data via phone survey and concluded offering online premium products would result in higher expectations of delivering logistics. [@H_bner_2016] have designed a planning framework for last mile order fulfillment and underlined the impacts of external and internal factors, like the specifications of a country, the retail itself, and customer behaviors. In general, OC (OmniChannel) logistics planning includes both back-end fulfillment and last mile distribution concepts. 
+
+[@Melacini_2018] conducted a systematic literature review to shed light on challenges regarding e-fulfillment and distribution, specifically towards OC strategy. This study and many previous endeavors concentrate on distribution network design, inventory and capacity management, and delivery planning and execution. It distinguishes online and offline channels in terms of effectiveness. For instance, online channel merits shine when it comes to assortment planning as inventories and customer display don't require to align to the extend of in-store shopping [@Randall_2006]. Omnichannel retailers, however, have cross-channel objectives, which means the aggregated criteria must be met, like total sales over channels, or overall retail customer experience. Popular items can be sold using both online and offline, but more specialized products with higher incurred costs seem to be more profitable in online channels [@Zhang_2010, Berman_2004]. 
+
+[@Hubner2016-ac] suggest that the transition towards omnichannel retailing typically starts with click-and-collect as their default delivery mode and traditional stores also play a new role, which is a pick-up point. This can happen in two ways; site-to-store (order is placed at the online channel and the product will be sent to the store from the warehouse) and immediate pick-up in store (the online order is sent to the store and the customer can redeem their order right-away in the aisle) [@Melacini_2018].
+
+The new role of physical store and its revival is the subject of another study [@H_bner_2021]. They propose that traditional physical stores or brick-and-mortar stores enable retailers to offer more seamless and improved operations, which is the ultimate objective of omnichannel strategy. Not only can they fulfill online orders, as mentioned before, shorter lead times to customers and extended assortments make them an invaluable assets for those retailers that have already opened and operated traditionally.
+
+### Marketing
+The Marketing Science Institute put a major emphasis on omnichannel retailing for marketing research back in 2018 [@msi_2018]. Adding a new channel, whether online or offline, adds to the bottom line according to an empirical study [@Wang_2017]. The study highlights the complementary effect of online and offline channels despite their substitution effect in distribution. Strategic initiatives like opening a physical store or an online one seems to be inevitable under fierce competition. Those retailers that established a brick-and-mortar store in the first place (e.g. Walmart, Target, and Kroger) intend to protect their market shares by initiating and integrating their own online channel [@Jindal_2021]. Advertising has cross-channel outcomes that must be optimized too. Online advertising could drive offline sales, which is known as "cross-effect" and increases its own channel sales, or an "own-effect" [@Dinner_2013]. In addition, the magnitude of ads impacts is not constant. Paid search advertising, for instance, results in a higher income for offline channel than traditional ads [@Dinner_2013]. 
+
+As stated previously, each channel is able to offer distinct benefits for customers and sellers. Quick delivery is one the areas online channels has an edge over offline ones, but this is not only one. More importantly, large assortment, competitive prices, and purchase convenience are the primary reasons why online retailers attract customers [@Jindal_2021]. But a customer is likely to have touch points across channels rather than just one through his or her purchase journey. For example, assuming customers go through different stages starting from need recognition, then information search, purchase, and finally after-sales service, customers typically go through each via a separate channel of even a combination of them [@Neslin_2006]. 
+
+Recently, customer experience obtained a lot of attention and researchers have been attempting to propose a solid definition of this construct. Nowadays, customers interactive more frequently and via myriad touch points with a firm, which complicates customer journey [@Lemon_2016].  Customer-facing or shopper-facing technologies improve customer's journey and their engagement with products, services, or brands [@Shankar_2021] [@Grewal_2021]. 
+
+### Technology Role 
+Out of all factors causing changes in retail formatting, technology enhancements and innovative devices can be identified as the leading one. A classification of such technologies and drivers of adopting them has been studied [@Shankar_2021]. AI, for instance, has so many applications such as sales/customer relationship management, personalization and recommendation systems, customer service management, supply chain optimization, inventory management, and store task creation. 
+
+[@brynjolfsson2013competing] points out the role of technologies like cell-phones or augmented reality in blurring retails channel boundaries and improved interactions with their customers, and thus, proposed a reshaped competitive advantage should be considered by both retailers and their supply chain collaborators. It's suggested that AR blurs the boundaries between channels because of its combined offering of embedded, embodied, and extended experience [@Hilken_2018]. Virtual try-on try-out tools provide contextual information that used to be found exclusively in traditional stores, or AR could offer specialized and interactive information that wasn't possible for brick-and-mortar store in the past. 
+
+It's of utmost importance for retailers to reflect on strategies for positioning in the new dynamic marketplace [@Grewal_2021]. This article recognizes technology as the core enabler of the strategies related to 6Ps of retailing, naming retail place and supply chain management, product,
+pricing, promotion, personnel, and presentation. With the vast amount of data that is produced, collected, and analyzed, many of retail technologies could be grouped into AI segment. 
+
+### Large Language Models
+Artificial intelligence has been flourishing in so many businesses and industries. Goldman Sachs estimates AI has the potential to raise global GDP by 7% in the next 10 years [@Generative-2023-09-23]. Customer industries such as retail is projected to reap the benefits of marketing and sales AI applications more than any industries, and this is due to the large amount of data produced as people have interactions [@Sizing-2023-09-23]. Recently, generative AI, which is a compelling subset of AI, has emerged in a variety of fields and practices.
+
+Generative AI is a collection of computational techniques generating new, meaningful content like text, images, and audio thanks to its huge sets of training data [@Feuerriegel_2023]. 
+
+Large language models have been improving to an unprecedented speed. ChatGPT was released in November 2022, and it took only a few month for an updated model called GPT4 [@Economic-2023-09-23]. In May 2023, Google announced a new LLM, PaLM 2 that empowers its Bard chatbot [@Economic-2023-09-23]. 
+
+LLMs like ChatGPT enables e-commerces reduce their personnel resource costs considerably since they provide automated customer service and order fulfillment services [@Rivas_2023]. 
+
+### LLMs as a Sales Assistant
+Our main contribution is to explore the consultancy capabilities of LLMs responses to the questions a prospective customer may ask. The customer should experience what the company have already intended regardless of retail channel distribution. Customer experience is, by definition, a multidimensional construct that includes cognitive, emotional, behavioral, sensorial, and social responses to the offering during their journey [@Lemon_2016].
+
+### Concerns about LLMs
+
+
+## References
+
+
+
+
+
+

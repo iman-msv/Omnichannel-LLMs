@@ -1,0 +1,15 @@
+pacman
+readr
+dplyr
+stringr
+purrr
+tidyr
+tidytext
+tokenizers
+gt
+gtsummary
+tidyverse
+ggplot2
+tibble
+forcats
+lubridate

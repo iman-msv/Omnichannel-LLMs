@@ -11,6 +11,10 @@ keywords:
   - natural language processing
 bibliography: "https://api.citedrive.com/bib/45ed9c35-1341-4f53-ae0b-9bd087b2ebcd/references.bib?x=eyJpZCI6ICI0NWVkOWMzNS0xMzQxLTRmNTMtYWUwYi05YmQwODdiMmViY2QiLCAidXNlciI6ICIzNzQ2IiwgInNpZ25hdHVyZSI6ICI4YmYxNmFiZjZjNzdjYjExYWRhNGVmNjNhZGQ0OWU2NGE3OGY5NjAzMzQwN2ZhMDZiZmI0ZDFlZDA4MDQwMjljIn0=/bibliography.bib"
 format: pdf
+execute: 
+  echo: false
+  cache: false
+  warning: false
 ---
 
 ## 1. Introduction
@@ -18,9 +22,9 @@ The concept of omni-channel retailing is not limited to recent years, but due to
 
 A channel represents any contact point or medium that a customer and the firm can interact with each other [@Neslin_2006]. One of the accepted definitions of omni-channel management is "the synergetic management of the numerous available channels and customer touchpoints, in such a way that the customer experience across channels and the performance over channels are optimized" [@Verhoef_2015]. In other words, the objective is to create a shopping journey in which customers feel a seamless experience across offline and online channels [@Bhatnagar_2004]. Omni-channel, however, is not the same as multi-channel (or multiple channel) due to lack of synergy or even cross-channel, which doesn't meet the level of required integration [@Li_2018; @Hajdas_2022]. 
 
-The transition phases from a single- or multi-channel retailer toward channel integration and the creation of a seamless customer experience on different channels raise some serious issues that require appropriate management and tools. Technology, and specifically Artificial Intelligence (AI), has a multitude of capabilities that can streamline the process and result in omni-channel retailing with the necessary level of integration. This article seeks to explore the prospective benefits of Large Language Models (LLMs) for addressing the problems and challenges in the way of integrating retail channels. 
+The transition phases from a single- or multi-channel retailer toward channel integration and the creation of a seamless customer experience on different channels raise some serious issues that require appropriate management and tools. Technology, and specifically Artificial Intelligence (AI hereafter), has a multitude of capabilities that can streamline the process and result in omni-channel retailing with the necessary level of integration. This article seeks to explore the prospective benefits of Large Language Models (LLMs hereafter) for addressing the problems and challenges in the way of integrating retail channels. 
 
-First, we review the literature to have a clear image of omni-channel retailing from different points of view to grasp what additional steps it requires to implement the strategy. Then, the role of technology and its unprecedented merits that can pave the way to become an omni-channel retailer are explored in the previous studies. Next, we discuss Large Language Models (LLMs hereafter) like ChatGPT and Bard that generate text in response to users prompts. Finally, we ask two commercial LLMs to generate marketing messages and evaluate them with Natural Language Processing (NLP hereafter) to evaluate if the messages meet the characteristics of integrated channels.
+First, we review the literature to have a clear image of omni-channel retailing from different points of view to grasp what additional steps it requires to implement the strategy. Then, the role of technology and its unprecedented merits that can pave the way to become an omni-channel retailer are explored in the previous studies. Next, we discuss LLMs like ChatGPT and Bard that generate text in response to users prompts. Finally, we ask two commercial LLMs to generate marketing messages and evaluate them with Natural Language Processing (NLP hereafter) to evaluate if the messages meet the characteristics of integrated channels.
 
 ## 2. Literature Review
 Retailing has evolved in various forms from the past to the present. Each new format, with its customized channels, has undergone testing to measure its efficiency and potential to serve customers satisfactorily. Considering the purchasing process allows us to explore the distinctive features of each format and identify their inherent strengths and weaknesses. One simplified yet insightful framework involves four major steps that customers typically follow: information search, purchase, acquisition, and returns [@Gauri_2021]. In traditional retail formats, the entire customer journey used to take place at a single physical channel. Nowadays, however, customers can opt for a combination of channels to fulfill their information search, product purchase, and acquisition, or even product return [@Kim_2008]. For example, some customers prefer to search offline and buy online, a practice widely known as showrooming [@Ailawadi_2017], or choose products to buy online and collect them at specific locations, known as click-and-collect [@Weltevreden_2008]. Even more complex, one can place an order in one channel (e.g., on a smartphone), receive the order via another channel (e.g., home delivery), and return it in case of an error through a third channel (e.g., a physical store) [@Kembro_2018]. Each channel has its own merits, and retailers would benefit from harnessing the advantages and mitigating the disadvantages of each channel.
@@ -43,26 +47,341 @@ Additionally, marketing communication is one of the potential contributors to co
 #### 2.1.1 Integrated Marketing Communications
 The messages that customers receive at each step of their journey must be crafted in alignment with the value proposition of the retailer. In an omni-channel world, IMC (Integrated Marketing Communications) underpins the entire strategy, as service consistency makes it feasible. The primary goal is to send clear, consistent, and compelling brand and company messages through integrated and coordinated communication channels. [@e228abed85a142f0b132137f1932e959]. 
 
-Similar to omni-channel retailing, the concept of an omni-channel approach to brand engagement emphasizes the need for IMC as a prerequisite for a unified brand experience. [@Manser_Payne_2017]. 
+IMC could be positioned as a resource in Resource-Based View and has been shown to enhance both brand communication effectiveness and market-based performance [@Luxton_2014]. Similar to omni-channel retailing, the concept of an omni-channel approach to brand engagement emphasizes the need for IMC as a prerequisite for a unified brand experience [@Manser_Payne_2017].
+
+Incompetent organizational capabilities such as information sharing and technological assets impedes consistent brand messages across channels [@Manser_Payne_2017]. However, we propose AI and in specific, LLMs have the potential to overcome those barriers to some extent. 
 
 ### 2.2 Technology as a Transition Facilitator
 Among all the factors causing changes in retailing, technology enhancements and innovative devices can be identified as the leading ones. It's of utmost importance for retailers to reflect on strategies for positioning in the new dynamic marketplace [@Grewal_2021]. The article recognizes technology as the core enabler of the strategies related to the 6Ps of retailing. 
 
-Customer-facing or shopper-facing technologies improve the customer's journey and their engagement with products, services, or brands [@Shankar_2021; @Grewal_2021]. A classification of such technologies and the drivers for adopting them has been studied [@Shankar_2021]. For instance, Artificial Intelligence (AI hereafter) has numerous applications, including sales/customer relationship management, personalization and recommendation systems, customer service management, supply chain optimization, inventory management, and store task creation. With the vast amount of data that is produced, collected, and analyzed, many retail technologies can be grouped into AI segment [@Grewal_2021]. 
+Customer-facing or shopper-facing technologies improve the customer's journey and their engagement with products, services, or brands [@Shankar_2021; @Grewal_2021]. A classification of such technologies and the drivers for adopting them has been studied [@Shankar_2021]. For instance, AI has numerous applications, including sales/customer relationship management, personalization and recommendation systems, customer service management, supply chain optimization, inventory management, and store task creation. With the vast amount of data that is produced, collected, and analyzed, many retail technologies can be grouped into AI segment [@Grewal_2021]. 
 
 Another newly adopted technology is Augmented Reality (AR hereafter) that has pushed omni-channel strategy one step further. One study points out the role of technologies like cell phones and AR in blurring retail channel boundaries and improving interactions with customers [@brynjolfsson2013competing]. Consequently, a reshaped competitive advantage should be considered by both retailers and their supply chain collaborators. It's suggested that AR blurs the boundaries between channels because of its combined offering of embedded, embodied, and extended experiences [@Hilken_2018]. Virtual try-on tools provide contextual information that used to be exclusively found in traditional stores, or AR can offer specialized and interactive information that was not possible for brick-and-mortar stores in the past. 
 
 #### 2.2.1 Large Language Models
 AI has been thriving in numerous businesses and industries. Goldman Sachs estimates that AI has the potential to increase global GDP by 7% in the next 10 years [@Generative-2023-09-23]. Customer-centric industries such as retail are projected to benefit more from marketing and sales AI applications than any other industries due to the vast amount of data generated through customer interactions [@Sizing-2023-09-23]. Recently, generative AI, a compelling subset of AI, has emerged in various fields and practices.
 
-Generative AI is a set of computational techniques that can create new, meaningful content, such as text, images, and audio, thanks to its vast training data sets [@Feuerriegel_2023]. Large language models (LLM hereafter) have been advancing at an unprecedented pace enabling users to receive answers to their prompts. ChatGPT was released in November 2022, and within just a few months, an updated model called GPT-4 was introduced [@Economic-2023-09-23]. In May 2023, Google announced a new large language model, PaLM 2, which enhances its Bard chatbot [@Economic-2023-09-23].
+Generative AI is a set of computational techniques that can create new, meaningful content, such as text, images, and audio, thanks to its vast training data sets [@Feuerriegel_2023]. LLMs have been advancing at an unprecedented pace enabling users to receive answers to their prompts. ChatGPT was released in November 2022, and within just a few months, an updated model called GPT-4 was introduced [@Economic-2023-09-23]. In May 2023, Google announced a new large language model, PaLM 2, which enhances its Bard chatbot [@Economic-2023-09-23].
 
-Large language models like ChatGPT enable e-commerce businesses to significantly reduce their personnel resource costs by providing automated customer service and order fulfillment services [@Rivas_2023].
+It has been suggested LLMs have the potential to be used as economic agents and researchers would gain reasonable responses to given endowments and scenarios because of large and wide-range data set they have been trained on [@Horton2023]. Analysis on ChatGPT responses implies how effective they are as they align with economic theories and marketers could conduct their various researches like conjoint analysis by designing their survey questions and ask LLMs [@Brand_2023]. LLMs like ChatGPT enable e-commerce businesses to significantly reduce their personnel resource costs by providing automated customer service and order fulfillment services [@Rivas_2023]. 
 
 ## 3. Coordinating Marketing Messages with LLMs
-Our main contribution is to evaluate the marketing messages across different retail channels generated by commercialized and well-known LLMs. The customer should experience what the company has already intended, regardless of retail channel distribution so that conflicted messages or incompatible experience would hinder omni-channel strategy.
+Our main contribution is to evaluate the marketing messages across different retail channels generated by commercialized and well-known LLMs. The customer should experience what the company has already intended, regardless of customer touchpoints; otherwise, conflicted messages or incompatible experience would hinder unique experience of omni-channel strategy. There are two suggested types of customer touchpoints: personal brand touchpoints that includes any direct connection between a customer and a brand personnel and non-personal touchpoints in which connection is made without a personal encounter [@Manser_Payne_2017]. We aim to cover both in our analytics as well.
 
-Channel integration, the ultimate objective in omni-channel retailing, can be studied from two main perspectives: the consumer approach and the retail approach [@Hajdas_2022]. In this study, we specifically focus on the former, aiming to evaluate whether LLMs are capable of producing marketing messages that foster a coherent brand experience.
+Channel integration, the ultimate objective in omni-channel retailing, can be studied from two main perspectives: the consumer approach and the retail approach [@Hajdas_2022]. In this study, we specifically focus on the former, aiming to evaluate whether LLMs are capable of producing marketing messages that foster a coherent brand experience. 
+
+## 4. Text Analysis Results
+First, we need to write a prompt to ask ChatGPT write effective advertising messages to introduce a fashion retailer targeting segments of the market that intend to purchase clothes with acceptable quality and moderate price. The prompt is as follows: "Suppose you are responsible for writing ad messages in a fashion retailer that sells clothes with affordable prices and acceptable quality. The main purpose at this stage is brand awareness. Generate 50 ad messages without writing anything further". Then, we asked for advertising messages appropriate for retailer website, its official twitter account, and even suggestion for a salesman at the store to introduce the brand. 
+
+The following text analyses were performed with the R package tidytext [@Silge_2016], which is designed based on tidy data principles. Compatibility with the R tidyverse framework enables us to harness the power of other versatile packages to manipulate data and visualize our findings [@Wickham_2019].
+
+```{r Packages}
+if (!require(pacman)) {
+  install.packages("pacman")
+  library(pacman)
+}
+
+p_load(tidyverse, tidytext, widyr, tokenizers, gt, gtsummary, scales,
+       ggraph, igraph)
+```
+
+```{r Data set}
+chatgpt <- read_csv('chatgpt responses.csv')
+
+chatgpt <- chatgpt |>  
+  mutate(tweet = str_remove_all(tweet, pattern = "^\"|\"$"), 
+         website = str_remove_all(website, pattern = "^\"|\"$"),
+         store = str_remove_all(store, pattern = "^\"|\"$"))
+```
+
+@fig-wordsum is a boxplot showing in what range of tokens (words in this case) generated messages are and comparing their distribution across channels. As expected, those sentences suggested to a store introducing the retailers contains more words than those of website, but a text-based social media like twitter entitles the LLM to produce longer sentences and reap the benefits of relevant hashtags. 
+
+```{r Tokens Summary Statistics}
+#| label: fig-wordsum
+#| fig-cap: Distribution of words used in each channel
+#| fig-cap-location: bottom
+#| fig-width: 5
+#| fig-height: 3
+chatgpt_token_counts <- chatgpt |> 
+  mutate(
+    tweet = map_int(tweet, 
+                          \(sent) length(unlist(tokenize_words(sent)))),
+    website = map_int(website, 
+                          \(sent) length(unlist(tokenize_words(sent)))),
+    store = map_int(store, 
+                          \(sent) length(unlist(tokenize_words(sent)))),
+    )
+
+chatgpt_token_counts |> 
+  pivot_longer(cols = everything(), names_to = "channel", 
+               values_to = "token_count") |> 
+  ggplot(aes(x = fct_reorder(channel, token_count) , 
+             y = token_count)) + 
+  geom_boxplot() +
+  labs(
+    x = "Channel",
+    y = "Number of Words"
+  ) + 
+  theme(
+    text = element_text(size = 10),
+    panel.grid.major.x = element_blank()
+  )
+```
+
+```{r Unnest Tokens}
+chatgpt_words <- chatgpt |> 
+  pivot_longer(cols = everything(), names_to = "channel", 
+               values_to = "text") |> 
+  arrange(channel) |> 
+  mutate(sentence_num = row_number()) |> 
+  unnest_tokens(word, text)
+
+chatgpt_words_count <- chatgpt_words |> 
+  count(channel, word, sort = TRUE)
+
+chatgpt_words_nostop <- chatgpt_words_count |> 
+  anti_join(stop_words)
+```
+
+Subsequently, we observe that certain words are commonly used across all channels, and are repeated in the generated messages. @fig-freqwords reveals that seven words are used with a relative frequency greater than 1% in their respective channel groups, excluding stop words, which do not add any value to our text analysis like "am", "to", "your", etc. The repetition of words "budget", "discover", "fashion", "friendly", "style", and "stylish" is relatively balanced across channels, with the exception of the word "affordable", which is used almost twice as often in the store channel. 
+
+```{r Frequent Words}
+#| label: fig-freqwords
+#| fig-cap: "Common Frequent Words Proportion Across Channels"
+#| fig-cap-location: bottom
+#| fig-width: 5
+#| fig-height: 3.5
+chatgpt_words_nostop |> 
+  pivot_wider(names_from = channel, values_from = n) |> 
+  mutate(
+    tweet = tweet / sum(tweet, na.rm = TRUE),
+    website = website / sum(website, na.rm = TRUE),
+    store = store / sum(store, na.rm = TRUE)
+  ) |> 
+  filter_if(is.numeric, ~ . > 0.01) |> 
+  pivot_longer(cols = c(tweet, website, store), 
+               names_to = "channel", values_to = "count") |> 
+  ggplot(aes(x = word, y = count, fill = channel)) + 
+  geom_col(position = "dodge") + 
+  scale_y_continuous(labels = percent_format()) + 
+  scale_fill_grey() + 
+  labs(
+    x = "Word", 
+    y = "Proportion in its Own Channel"
+  ) +
+  theme(
+    text = element_text(size = 10),
+    panel.grid.major.x = element_blank(),
+    legend.position = "top"
+  )
+```
+
+After removing English stop words from all generated sentences, @fig-freqword compares the five most frequent words in messages crafted for each channel. Two out of eleven words are detected in all three channels. The word "fashion" can be found almost equally across channels, but ChatGPT have accentuated the indispensable word "affordable" unevenly. ChatGPT suggest that the salesperson should say the brand name as a part of introduction speech in case a customer has no background information entering the store. 
+
+```{r Frequent Words Barplot}
+#| label: fig-freqword
+#| fig-cap: Words Repeated Most Frequently in Each Channel
+#| fig-cap-location: bottom
+#| fig-width: 5.5
+#| fig-height: 3
+chatgpt_words_nostop |> 
+  mutate(proportion = n / sum(n), .by = channel) |> 
+  slice_max(order_by = n, n = 5, by = channel) |> 
+  ggplot(aes(x = word, y = proportion)) + 
+  geom_col() +
+  facet_grid(~channel) + 
+  scale_y_continuous(labels = percent_format()) + 
+  coord_flip() + 
+  labs(
+    x = "Word",
+    y = "Proportion in Channel"
+  ) +
+  theme(
+    panel.grid.major.y = element_blank(), 
+    text = element_text(size = 10)
+  )
+```
+
+```{r TF-IDF}
+#| eval: false
+chatgpt_tfidf <- chatgpt_words_count |> 
+  bind_tf_idf(word, channel, n)
+
+chatgpt_tfidf |> 
+  anti_join(stop_words) |> 
+  slice_max(tf_idf, n = 10, by = channel) |> 
+  ggplot(aes(tf_idf, fct_reorder(word, tf_idf))) +
+  geom_col(show.legend = FALSE) + 
+  facet_wrap(~channel, scales = "free") + 
+  labs(x = "tf-idf", y = NULL)
+```
+
+Analyzing individual words in isolation is likely to be misleading due to lack of context having no clue of previous or next words. Thus, texts are tokenized not just word by word but two consecutive words, called "bigrams". @fig-bigrams plots the three most frequent bigrams for each channel. ChatGPT appropriately has focused on the retailer's main competitive advantage of affordable fashion in its content.
+
+```{r Bigrams}
+#| label: fig-bigrams
+#| fig-cap: Three Bigrams Repeated Most Frequently in Each Channel
+#| fig-cap-location: bottom
+#| fig-width: 5.5
+#| fig-height: 2.25
+chatgpt_bigrams <- chatgpt |> 
+  pivot_longer(cols = everything(), names_to = "channel", 
+               values_to = "text") |> 
+  arrange(channel) |> 
+  unnest_tokens(bigram, text, token = "ngrams", n = 2)
+
+chatgpt_separated_bigrams <- chatgpt_bigrams |> 
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+chatgpt_bigrams_filtered <- chatgpt_separated_bigrams |> 
+  filter_at(vars(word1, word2), ~ !. %in% stop_words$word)
+
+chatgpt_bigram_counts <- chatgpt_bigrams_filtered |> 
+  count(channel, word1, word2, sort = TRUE)
+
+chatgpt_bigrams_united <- chatgpt_bigram_counts |> 
+  unite(bigram, word1, word2, sep = " ")
+
+chatgpt_bigrams_united |> 
+  mutate(proportion = n / sum(n), .by = channel) |> 
+  slice_max(order_by = proportion, n = 3, by = channel) |> 
+  ggplot(aes(x = fct_reorder(bigram, proportion), y = proportion)) + 
+  geom_col() + 
+  scale_y_continuous(labels = percent_format()) +
+  facet_grid(~ channel) + 
+  labs(
+    x = "Bigram",
+    y = "Proportion in Channel"
+  ) +
+  coord_flip() + 
+  theme(panel.grid.major.y = element_blank(),
+        text = element_text(size = 10))
+```
+
+```{r Bigram Graph}
+bigram_graph_func <- function(ch) {
+  set.seed(2023)
+  chatgpt_bigram_counts |> 
+    filter(channel == ch) |> 
+    select(word1, word2, n) |> 
+    filter(n >= 4) |> 
+    graph_from_data_frame() |> 
+    ggraph(layout = "kk") +
+    geom_edge_link() + 
+    geom_node_point() + 
+    geom_node_text(aes(label = name), vjust = 1.2, hjust = 1.2, 
+                   size = 3, repel = TRUE, 
+                   point.padding = unit(0.2, "lines")) + 
+    ggtitle(str_to_title(ch)) + 
+    theme(text = element_text(size = 8))
+}
+```
+
+In an omni-channel context, it is essential that messages across interactive channels be consistent. Therefore, we examined which words appeared not only together, but in the same sentence. Such characteristics can be found in the messages that ChatGPT generated for each channel in @fig-wordassoc. The word "fashion" co-occurred most frequently with "affordable" and had an indirect association with prices on Twitter. The combination of "budget" and "friendly," which forms a common expression for a worthwhile offer, reflected the average price levels in addition to the word "affordable." Similarly, both store and website messages included the association of "fashion" and "affordable," despite the absence of "budget friendly" in the website channel.
+
+::: {#fig-wordassoc layout-ncol=3 fig-cap="Words Associations"}
+
+```{r Tweet Graph}
+#| fig-width: 2.2
+#| fig-height: 2
+bigram_graph_func(ch = "tweet")
+```
+
+```{r Store Graph}
+#| fig-width: 2.2
+#| fig-height: 2
+bigram_graph_func(ch = "store")
+```
+
+```{r Website Graph}
+#| fig-width: 2.2
+#| fig-height: 2
+bigram_graph_func(ch = "website")
+```
+
+:::
+
+```{r Pairwise Count}
+#| eval: false
+chatgpt_words |> 
+  filter(channel == "tweet") |> 
+  pairwise_count(item = word, feature = sentence_num, sort = TRUE) |>
+  filter(n > 10) |> 
+  gt()
+```
+
+```{r Pairwised Cor}
+tweet_cor <- chatgpt_words |> 
+  anti_join(stop_words) |>
+  filter(channel == "tweet") |> 
+  group_by(word) |> 
+  filter(n() >= 5) |> 
+  pairwise_cor(word, sentence_num, sort = TRUE)
+
+website_cor <- chatgpt_words |> 
+  anti_join(stop_words) |>
+  filter(channel == "website") |> 
+  group_by(word) |> 
+  filter(n() >= 5) |> 
+  pairwise_cor(word, sentence_num, sort = TRUE)
+
+store_cor <- chatgpt_words |> 
+  anti_join(stop_words) |>
+  filter(channel == "store") |> 
+  group_by(word) |> 
+  filter(n() >= 5) |> 
+  filter(word != "brand") |> 
+  pairwise_cor(word, sentence_num, sort = TRUE)
+```
+
+There are words with high rates of repetition in a sentence, but this may be due to the high rates of individual repetition, not necessarily to conveying a particular meaning. We can examine this using the phi coefficient, a well-known measure of binary correlation [@978-1-4919-8165-8] checking which words have stronger correlations. @fig-corr indicates calculated phi coefficient in different channels. The size of each point is drawn with respect to the magnitude of coefficient and the darker points represent negative values. The higher coefficient the stronger correlation of those two specific words appearing in a message. In Only words with more than 5 appearance have been included and coefficient magnitudes less than 0.3 removed from plots. 
+
+In tweets that ChatGPT generated, the word "wallet" has a strong positive correlation with "emptying" and a moderate positive correlation with "fabulous." "Prices" also has a weak positive correlation with "love" and a weak positive correlation with "style". The Phi coefficients are weak in the website channel. "Quality" and "prices" have a weak positive correlation, but "affordable" has weak negative correlations with "budget," "prices," and "quality." In the store channel, the positive correlation between the words "friendly" and "budget" is considerable; on the other hand, "fashion" has weak negative correlations with "friendly" and "style."
+
+We can infer from the correlations that words with similar meanings are unlikely to appear together in a message, while words with complementary meanings are more likely to be found as they convey a competitive advantage. However, it would be unwise to rely solely on GPT-LLMs, as they have some pitfalls as well.
+
+```{r Correlation Plot Func}
+corr_plot_func <- function(cor_data) {
+  cor_data |> 
+    filter(abs(correlation) > 0.3) |> 
+    ggplot(aes(x = item1, y = item2, size = correlation, 
+               color = correlation > 0)) + 
+    geom_point(show.legend = FALSE) + 
+    scale_size_area(limits = c(-1, 1), max_size = 4) + 
+    scale_color_manual(values = c("grey50", "grey19")) + 
+    labs(
+      x = "Word 1",
+      y = "Word 2"
+    ) +
+    theme(axis.text.x = element_text(angle = 90), 
+          legend.text = element_text(size = 5),
+          text = element_text(size = 8))
+}
+```
+
+::: {#fig-corr layout-nrow=3 fig-cap="Phi coefficient"}
+
+```{r Tweet Cor}
+#| fig-height: 3
+corr_plot_func(tweet_cor) + 
+  ggtitle("Tweet")
+```
+
+```{r Website Cor}
+#| fig-height: 2
+corr_plot_func(website_cor) + 
+  ggtitle("Website")
+```
+
+```{r Store Cor}
+#| fig-height: 3
+corr_plot_func(store_cor) + 
+  ggtitle("Store")
+```
+
+:::
+
+\clearpage
 
 
 ## References

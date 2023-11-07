@@ -88,9 +88,10 @@ word_count(chatgpt['salesman'])
 # TFIDF Function 
 def tfidf_func(sentences):
     # Tokenizing
-    tokens = [word_tokenize(doc.lower()) for doc in sentences.str.lower().to_list()]
+    tokens = [word_tokenize(doc) for doc in sentences.str.lower().to_list()]
+    no_stops = [nos_token for nos_token in tokens if nos_token not in stopwords.words('english')]
     # Gensim Dict
-    dict = Dictionary(tokens)
+    dict = Dictionary(no_stops)
     # Corpus Creation
     corpus = [dict.doc2bow(doc) for doc in tokens]
     #Instantiate TFIDF

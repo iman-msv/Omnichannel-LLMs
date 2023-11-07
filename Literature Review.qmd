@@ -1414,7 +1414,7 @@ There are two phases in the research framework. In phase one, this study develop
 
 A trained ML model was used to fetch the data and calculate the relationship between a user historical data and information of all the available products, automatically deleting unsuitable options for user using classification and regression tree (CART) algorithm. Completing the process, we built an AIML chatbot that could recognise customer demands and generate recommendations. Based on the results from the CNN models and CART, the chatbot determined what questions to ask customers. An omnichannel platform with a smart recommender system was realised. 
 
-# Omni-channel marketing, integrated marketing communications and consumer engagement
+# Omni-channel marketing, integrated marketing communications and consumer engagement [@Manser_Payne_2017]
 ## Abstract
 **Purpose** – In this invited paper, the authors aim to offer an integrated marketing communications (IMC) framework for understanding how disparate customer touchpoints impact consumer engagement and profitability in an omni-channel environment. For each aspect of the framework, the authors recommend areas for further research.
 
@@ -1427,7 +1427,41 @@ A trained ML model was used to fetch the data and calculate the relationship bet
 **Originality/value** – The authors proposed an omni-channel IMC Framework and a research agenda for advancing the field. As this is a new area of inquiry, the authors argue for the development of other comprehensive frameworks, both for general omni-channel IMC conceptualizations.
 
 ## Brief
+Even less is understood about how the IMC process impacts path-to-purchase and conversion-to-sales as part of a single-transaction environment (Brynjolfsson et al., 2013; Li and Kannan, 2014; Verhoef, 2012). Moreover, the extant research is virtually silent on how information consistency (and inconsistency) across customer touchpoints in an omni-channel environment affects customer satisfaction, engagement and loyalty (Fulgoni, 2016; Swoboda et al., 2016; Verhoef et al., 2015).
 
+We review literature linking personal and electronic channels of communication in an omni-channel context to consumer engagement, with an emphasis on channel and message unity.  We next discuss the theoretical foundations of omni-channel marketing and the role of IMC. We then provide a brief review of the literature linking omni-channel touchpoints to engagement and profitability. 
+
+### Conceptual development
+Omni-channel marketing has conceptual underpinnings in two interrelated disciplines: multi-channel marketing and IMC (Cummins et al., 2016). Below we discuss these concepts and their relationship to omni-channel marketing.
+
+#### Multi-channel marketing
+In multi-channel marketing, marketers are thus challenged to communicate and deliver goods and services via two or more synchronized channels (Rangaswamy and van Bruggen, 2005). From a brand experience perspective, marketers need to effectively manage interactive customer relationships according to customers’ channel preferences.
+
+However, multi-channel marketing is not without its limitations. These include siloing of channel utility, narrow channel scope, lack of integration of channels/touchpoints in the buying process and inadequate consideration of how channels independently and jointly impact the brand experience (Cummins et al., 2016; Rangaswamy and van Bruggen, 2005). In practice, marketing channels have often been created and managed separately with little integration (Verhoef, 2012).
+
+#### Integrated marketing communications
+IMC plays an important role in cross-channel synchronization. “Interactive” IMC emphasizes bringing together multiple consumer touchpoints, media and messages (Peltier et al., 2002). This interaction, along with emerging technologies, offer marketers the opportunity to tailor how they communicate with consumers and in which forms (Kim et al., 2004). 
+
+As with multi-channel marketing, a major complaint of IMC is the existence of organizational silos, which impede the marketer’s ability to create unified messaging solutions, address changing channel communication priorities and optimize path-to-purchase (Cao, 2014; Peltier et al., 2006). Much of the blame lies in problems associated with organizational complacency and capabilities, particularly with regard to organizational structure, organizational culture, interfunctional communications, information sharing and technological assets (Ots and Nyilasy, 2015; Peltier et al., 2013).
+
+#### Omni-channel marketing
+Omni-channel marketing thus follows a customer-centered focus featuring a “holistic” shopping experience, one in which a customer’s buying journey is smooth and seamless, irrespective of the channels used (Gupta et al., 2004; Shah et al., 2006). In this regard, in an omni-channel environment the most critical interaction is not with the channel but with the brand (Piotrowicz and Cuthbertson, 2014). Seeking to maximize customer relationships, Verhoef et al. (2015, p. 176) defined omni-channel management as the “synergistic management of the numerous available channels and customer touchpoints, in such a wat that the customer experience across channels and the performance over channels is optimized”. Combined, these definitions operationalize omni-channel marketing based on two key areas, how customers get the information and how transactions are fulfilled (Bell et al., 2014).
+
+The transition to omni-channel marketing has further increased the need for an interactive IMC orientation, in which organizational silos are diminished in favor of communication synergies that enhance customer engagement vis-a`-vis a unified brand experience (Hansen and Sia, 2015). Instead of viewing communication touchpoints in the context of customer choices, omni-channel marketing requires a unification of the total collection of available tools and platforms into a single-choice environment (Cummins et al., 2016). This evolution enhances the ability of firms to more quickly convert prospects intohigh-valued customers by creating a personalized information-acquisition-and-use  environment (Rocco and Bush, 2016). Omni-channel IMC is thus not simply a “tactical tool”, but a key strategic element for creating platform and message consistency across the entire organization (Porcu et al., 2012).
+
+### Omni-channel integrated marketing communications framework
+To guide future research in this area, we offer the omni-channel IMC framework shown in Figure 1. In the following sections, we discuss the key components – consumer touchpoints, brand engagement and customer profitability – as well as potential moderators, including cross-touchpoint unity, touchpoint utility, digital device used, customer lifecycle, product vs service, hedonic vs utilitarian purchases and consumer characteristics. While we acknowledge that the framework is not exhaustive, it does reflect issues related to omni-channel IMC research needs. 
+
+#### Consumer touchpoints
+Consumer touchpoints have been conceptualized in a number of ways. For example, Baxendale et al. (2015, p. 236) define a consumer touchpoint as an “episode of direct or indirect contact with the brand”. Recognizing the integrative potential of these touchpoints, Wind and Hays (2016a) define touchpoint value creation as:
+the ongoing, synergistic orchestration and optimization of all touchpoint value creation among an enterprise, the people in its network, the people it seeks to reach and serve, and the societies and cultures in which it exists and has responsibility.
+
+We define personal brand touchpoints as those in which consumers and brand personnel have direct contact, face-to-face or digitally. Non-personal brand touchpoints are those in which consumers interact with the brand without a personal encounter at the time of contact. Both personal and non-personal touchpoints may evolve over time.
+
+Specific research investigating shopper behavior across touchpoints and the firm’s omni-channel retail mix is particularly promising (Verhoef et al., 2015). Given the importance of cross-touchpoint message unity, research exploring firms’ IMC decision-making processes and the resulting IMC touchpoint tactics is also warranted. 
+
+#### Consumer-brand engagement
+For example, Hollebeek et al. (2014, p. 154) define consumer-brand engagement as “a consumer’s positively valenced brand-related cognitive, emotional and behavioral activity during or related to focal consumer/brand interactions”.
 
 # How Technology is Changing Retail [@Shankar_2021]
 ## Abstract
@@ -2013,5 +2047,14 @@ As retail and CPG executives explore how to integrate generative AI in their ope
 - Adversarial attacks. Foundation models are a prime target for attack by hackers and other bad actors, increasing the variety of potential security vulnerabilities and privacy risks.\ 
 
 To address these concerns, retail and CPG companies will need to strategically keep humans in the loop and ensure security and privacy are top considerations for any implementation. Companies will need to institute new quality checks for processes previously handled by humans, such as emails written by customer reps, and perform more-detailed quality checks on AI-assisted processes such as product design.
+
+# Large Language Models as Simulated Economic Agents: What Can We Learn from Homo Silicus? [@Horton2023]
+## Abstract
+Newly-developed large language models (LLM)|because of how they are trained and designed|are implicit computational models of humans|a homo silicus. LLMs can be used like economists use homo economicus: they can be given endowments, information, preferences, and so on, and then their behavior can be explored in scenarios via simulation. Experiments using this approach, derived from Charness and Rabin (2002), Kahneman, Knetsch and Thaler (1986), and Samuelson and Zeckhauser (1988) show qualitatively similar results to the original, but it is also easy to try variations for fresh insights. LLMs could allow researchers to pilot studies via simulation first, searching for novel social science insights to test in the real world.
+
+## Brief
+Most economic research takes one of two forms: (a) What would homo economicus do?" and b) What did homo sapiens actually do?" The (a)-type research takes a maintained model of humans, homo economicus, and subjects it to various economic scenarios, endowed with different resources, preferences, information, etc., and then deducing behavior; this behavior can then be compared to the behavior of actual humans in (b)-type research.
+
+In this paper, I argue that newly developed large language models (LLM)|because of how they are trained and designed|can be thought of as implicit computational models of humans|a homo silicus. These models can be used the same way economists use homo economicus: they can be given endowments, put in scenarios, and then their behavior can be explored|though in the case of homo silicus, through computational simulation, not a mathematical deduction.1 This is possible because LLMs can now respond realistically to a wide range of textual inputs, giving responses similar to what we might expect from a human.
 
 # References

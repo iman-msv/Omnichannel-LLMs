@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import re
-from gensim.models import Word2Vec
+from langdetect import detect
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
 import spacy
@@ -10,6 +10,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import PowerTransformer
 from sklearn.metrics import silhouette_score
 import scipy.cluster as sc
 from spacytextblob.spacytextblob import SpacyTextBlob
@@ -39,7 +40,7 @@ def scraping_review_pages_onebyone(html_file_path):
 reviews = []
 
 for i in range(1, num_pages + 1):
-    path = f'Amazon Customer Review P{i}.html'
+    path = f'Amazon Customer Reviews Apple iPhone XR, US Version, 128GB, Black - Unlocked (Renewed) P{i}.html'
     reviews.extend(scraping_review_pages_onebyone(path))
 
 # Creating DataFrame
@@ -69,6 +70,23 @@ amazon_comments['color'] = amazon_comments['purchased_product'].apply(lambda x: 
 # Dropping Original Column
 amazon_comments.drop(columns = ['purchased_product'], inplace=True)
 
+# Create a condition indicating whether the review contains enough characters
+more_one_char = amazon_comments['review'].apply(lambda x: len(x) > 1)
+
+# Filtering reviews
+amazon_comments = amazon_comments[more_one_char]
+
+# Detecting Language of Review
+amazon_comments['language'] = amazon_comments['review'].apply(lambda x: detect(x))
+
+# Reviews in a language other than English
+amazon_comments[amazon_comments['language'] != 'en']
+
+# Filtering espanish
+amazon_comments = amazon_comments[amazon_comments['language'] != 'es']
+
+amazon_comments.drop(columns=['language'], inplace=True)
+
 # Reset Index
 amazon_comments.reset_index(drop=True, inplace=True)
 
@@ -77,16 +95,22 @@ amazon_comments.head()
 amazon_comments.info()
 amazon_comments.nunique()
 
+# Location is constant
+amazon_comments.drop(columns=['location'], inplace=True)
+
 # Exploratory Data Analysis
 sns.set_theme(style="whitegrid")
 sns.countplot(x = 'rating', data = amazon_comments)
 plt.show()
 
 # Replacing u with you
-amazon_comments['review'] = amazon_comments['review'].str.replace(r'\bu\b', 'you', regex=True)
+# Replacing informal spelling
+informal_spell = {
+    r'\bu\b': 'you',
+    r'\byr\b': 'year'
+}
 
-# Replacing I"m with I'm (one sentence has this issue)
-amazon_comments['review'] = amazon_comments['review'].str.replace('I"m', "I'm")
+amazon_comments['review'].replace(informal_spell, regex=True, inplace=True)
 
 # Spacy
 nlp = spacy.load('en_core_web_md')
@@ -103,10 +127,10 @@ def lemma_nostopwords(sentences):
 
 amazon_comments['review_cleaned_nostop'] = amazon_comments['review'].apply(lemma_nostopwords)
 
-# Without removing stopwords
+# Without removing stopwords (for sentinemt)
 def lemma_withstopwords(sentences):
     doc = nlp(sentences)
-    lemmas = [token.lemma_.lower() for token in doc]
+    lemmas = [token.lemma_ if (token.text.isupper() and token.text != "I") else token.lemma_.lower() for token in doc]
     lemmas = [lemma for lemma in lemmas if (lemma.isalpha() or lemma == '!')]
     pre_processed = ' '.join(lemmas)
     return(pre_processed)
@@ -153,7 +177,10 @@ sns.barplot(x = 'count', y = 'word', data = trigrams[:10])
 plt.show()
 
 # Clustering Function
-def clustering_func(data, cluster_method, k = None, hi_method = 'ward', scale = False):
+def clustering_func(data, cluster_method, k = None, hi_method = 'ward', scale = True, transform = True):
+    # Skewness Reduction
+    if transform:
+        data = PowerTransformer(method='yeo-johnson').fit_transform(data)
 
     # StandardScaler
     if scale:
@@ -201,30 +228,49 @@ def clustering_func(data, cluster_method, k = None, hi_method = 'ward', scale = 
             # Return Labels
             return labels
 
-# Clustering with BOW
-vectorizer = CountVectorizer(ngram_range=(1,1))
-bag_of_words = vectorizer.fit_transform(amazon_comments['review_cleaned_nostop'])
-bow_df = pd.DataFrame(bag_of_words.toarray(), index=amazon_comments.index, columns=vectorizer.get_feature_names_out())
 
-# Dimension Reduction
-svd = TruncatedSVD(n_components=2)
-svd.fit(bag_of_words.toarray())
-svd.explained_variance_
+# Dimension Reduction Function
+def dim_reduc(data, method, n_components = None, scale = True, transform = True):
+    # Skewness Reduction
+    if transform:
+        data = PowerTransformer(method='yeo-johnson').fit_transform(data)
+    
+    # Scale 
+    if scale:
+        data = StandardScaler().fit_transform(data)
+    
+    if method == 'PCA':
+        if n_components == None:
+        # Perform PCA
+            pca = PCA()
+            pca.fit_transform(data)
+            # Calculate cumulative proportion of variance
+            explained_variance = pca.explained_variance_ratio_
+            cumulative_proportion = np.cumsum(explained_variance)
+            print('Explained Variance:', explained_variance)
+            print('Cumulative Proportion:', cumulative_proportion)
 
-X_reduced = svd.transform(bag_of_words.toarray())
-reduced_df = pd.DataFrame(X_reduced)
+        else:
+            pca = PCA(n_components = n_components)
+            pca_comp = pca.fit_transform(data)
+            return pca_comp
+    
+    if method == 'SVD':
+        if n_components == None:
+        # Perform SVD
+            svd = TruncatedSVD()
+            svd.fit_transform(data)
+            # Calculate cumulative proportion of variance
+            explained_variance = svd.explained_variance_ratio_
+            cumulative_proportion = np.cumsum(explained_variance)
+            print('Explained Variance:', explained_variance)
+            print('Cumulative Proportion:', cumulative_proportion)
 
-# Clustering BOW (unigram)
-clustering_func(data = reduced_df, cluster_method = 'hierarchical')
-clustering_func(data = reduced_df, cluster_method = 'kmeans')
+        else:
+            svd = TruncatedSVD(n_components = n_components)
+            svd_comp = svd.fit_transform(data)
+            return svd_comp
 
-# Suggesting 3 Clusters
-amazon_comments['kmeans_unigram_3clust'] = clustering_func(data = reduced_df, cluster_method = 'kmeans', k = 3)
-
-# Clustering BOW (bigram)
-vectorizer = CountVectorizer(ngram_range=(2,2))
-bag_of_words = vectorizer.fit_transform(amazon_comments['review_cleaned_nostop'])
-bow_df = pd.DataFrame(bag_of_words.toarray(), index=amazon_comments.index, columns=vectorizer.get_feature_names_out())
 
 # Word Embedding
 # Doc2Vec
@@ -236,7 +282,7 @@ def dic2vec(reviews_df, column_name):
     tagged_reviews = [TaggedDocument(words=review_words, tags=[str(i)]) for i, review_words in enumerate(tokenized_reviews)]
 
     # Train a Doc2Vec model
-    model = Doc2Vec(tagged_reviews, vector_size=10, window=2, min_count=2, workers=4, epochs=100)
+    model = Doc2Vec(tagged_reviews, vector_size=100, window=2, min_count=2, workers=4, epochs=100)
 
     # Get a vector for each review
     review_vectors = [model.dv[str(i)] for i in range(len(reviews_df))]
@@ -247,12 +293,28 @@ def dic2vec(reviews_df, column_name):
     return vectors_df
 
 dic2vec_reviews = dic2vec(amazon_comments, 'review_cleaned_nostop')
+dic2vec_reviews.columns = [f'vec{i}' for i in range(dic2vec_reviews.shape[1])]
 
 clustering_func(data = dic2vec_reviews, cluster_method = 'hierarchical')
 clustering_func(data = dic2vec_reviews, cluster_method = 'kmeans')
 
-# Suggest 2 Clusters
-amazon_comments['kmeans_doc2vec_2clust'] = clustering_func(data = dic2vec_reviews, cluster_method = 'kmeans', k = 2)
+# Suggest 3 Clusters
+amazon_comments['kmeans_doc2vec_4clust'] = clustering_func(data = dic2vec_reviews, cluster_method = 'kmeans', k = 4)
+
+# Number of Cases in Each Cluster
+amazon_comments['kmeans_doc2vec_4clust'].value_counts()
+
+# Dimension Reduction
+dim_reduc(dic2vec_reviews, method='PCA')
+
+# 7 Componenets Cover 90% of Information
+dic2vec_reduced_reviews = dim_reduc(dic2vec_reviews, method='PCA', n_components=7)
+dic2vec_reduced_reviews = pd.DataFrame(dic2vec_reduced_reviews)
+dic2vec_reduced_reviews.columns = [f'pr{i}' for i in range(dic2vec_reduced_reviews.shape[1])]
+
+# Clustering After PCA
+clustering_func(data = dic2vec_reduced_reviews, cluster_method = 'hierarchical', hi_method='ward')
+clustering_func(data = dic2vec_reduced_reviews, cluster_method = 'kmeans')
 
 # Feature: Sentiment Score
 nlp_added = spacy.load('en_core_web_md')
@@ -276,77 +338,97 @@ sns.boxplot(x = 'rating', y = 'polarity', data = amazon_comments)
 plt.show()
 
 # Clustering with Sentiment
-clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'hierarchical')
+clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'hierarchical', k = 3)
 clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'kmeans')
 
-# Suggesting 3 or 4 Clusters 
-amazon_comments['hierar_sent_3clust'] = clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'hierarchical', k = 3)
+# Suggesting 4 Clusters 
+amazon_comments['kmeans_sent_4clust'] = clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'kmeans', k = 4)
+
+# Combined Features
+combined_features = amazon_comments[['polarity', 'subjectivity', 'rating']].merge(dic2vec_reviews, left_index=True, right_index=True)
+
+# Clustering with Combined Features
+clustering_func(combined_features, cluster_method='hierarchical')
+clustering_func(combined_features, cluster_method='kmeans')
+
+# Suggesting 4 Clusters 
+amazon_comments['kmeans_comb_4clust'] = clustering_func(data = combined_features, cluster_method = 'kmeans', k = 4)
 
 # Comparing Clusters
-amazon_comments['hierar_sent_3clust'].value_counts()
-amazon_comments.groupby('hierar_sent_3clust')['rating'].value_counts(normalize=True)
-amazon_comments.groupby('hierar_sent_3clust')['polarity'].mean()
+def comparing_clusts(clusters):
+    # Comparing Clusters
+    print(amazon_comments[clusters].value_counts())
+    print(amazon_comments.groupby(clusters)['rating'].value_counts(normalize=True))
+    print(amazon_comments.groupby(clusters)['polarity'].mean())
 
-sns.displot(x = 'polarity', data = amazon_comments, kind='kde', hue = '')
+    sns.displot(x = 'polarity', data = amazon_comments, kind='kde', hue = clusters)
+    plt.show()
+
+    sns.boxplot(x = clusters, y = 'polarity', data = amazon_comments)
+    plt.show()
+
+    sns.displot(x = 'subjectivity', data = amazon_comments, kind='kde', hue = clusters)
+    plt.show()
+
+    sns.displot(x = 'num_words', data = amazon_comments, kind='kde', hue = clusters)
+    plt.show()
+
+comparing_clusts('kmeans_doc2vec_4clust')
+comparing_clusts('kmeans_sent_4clust')
+comparing_clusts('kmeans_comb_4clust')
+
+# Words in each segment
+# Conditions
+group1 = amazon_comments['kmeans_sent_4clust'] == 0
+group2 = amazon_comments['kmeans_sent_4clust'] == 1
+group3 = amazon_comments['kmeans_sent_4clust'] == 2
+group4 = amazon_comments['kmeans_sent_4clust'] == 3
+
+# Unigram Group 1
+unigrams = word_count_func(amazon_comments[group1], (1,1))
+sns.barplot(x = 'count', y = 'word', data = unigrams[:10])
 plt.show()
 
-sns.boxplot(x = 'hierar_sent_3clust', y = 'polarity', data = amazon_comments)
+# Unigram Group 2
+unigrams = word_count_func(amazon_comments[group2], (1,1))
+sns.barplot(x = 'count', y = 'word', data = unigrams[:10])
 plt.show()
 
-sns.displot(x = 'subjectivity', data = amazon_comments, kind='kde', hue = 'hierar_sent_3clust')
+# Unigram Group 3
+unigrams = word_count_func(amazon_comments[group3], (1,1))
+sns.barplot(x = 'count', y = 'word', data = unigrams[:10])
 plt.show()
 
-sns.displot(x = 'num_words', data = amazon_comments, kind='kde', hue = 'hierar_sent_3clust')
+# Unigram Group 4
+unigrams = word_count_func(amazon_comments[group4], (1,1))
+sns.barplot(x = 'count', y = 'word', data = unigrams[:10])
 plt.show()
 
-# Clustering with Several Features
-# 'polarity', 'subjectivity', 'rating', 'dic2vec_reviews'
-clustering_df = amazon_comments[['polarity', 'subjectivity', 'rating']]
-clustering_df.merge(dic2vec_reviews, left_index=True, right_index=True)
-
-clustering_func(clustering_df, cluster_method='hierarchical', scale=True)
-clustering_func(clustering_df, cluster_method='kmeans', scale=True)
-
-# Suggesting 4 Clusters
-amazon_comments['kmeans_4clust'] = clustering_func(clustering_df, cluster_method='kmeans', scale=True, k = 4)
-
-amazon_comments['kmeans_4clust'].value_counts()
-amazon_comments.groupby('kmeans_4clust')['rating'].value_counts(normalize=True)
-amazon_comments.groupby('kmeans_4clust')['polarity'].mean()
-amazon_comments.groupby('kmeans_4clust')['num_words'].mean()
-
-sns.displot(x = 'polarity', data = amazon_comments, kind='kde', hue = 'kmeans_4clust')
+# Bigrams Group 1
+bigrams = word_count_func(amazon_comments[group1], (2,2))
+sns.barplot(x = 'count', y = 'word', data = bigrams[:10])
 plt.show()
 
-sns.boxplot(x = 'kmeans_4clust', y = 'polarity', data = amazon_comments)
+# Bigrams Group 2
+bigrams = word_count_func(amazon_comments[group2], (2,2))
+sns.barplot(x = 'count', y = 'word', data = bigrams[:10])
 plt.show()
 
-sns.displot(x = 'subjectivity', data = amazon_comments, kind='kde', hue = 'kmeans_4clust')
+# Bigrams Group 3
+bigrams = word_count_func(amazon_comments[group3], (2,2))
+sns.barplot(x = 'count', y = 'word', data = bigrams[:10])
 plt.show()
 
-# Replacing Labesl
-amazon_comments['kmeans_4clust'].replace({
-    0:'Subjective Short Satisfied',
-    1:'Dissatisfied',
-    2:'Long Satisfied',
-    3:'Neutral'
-}, inplace=True)
+# Bigrams Group 4
+bigrams = word_count_func(amazon_comments[group4], (2,2))
+sns.barplot(x = 'count', y = 'word', data = bigrams[:10])
+plt.show()
 
+# Similarity
+amazon_comments['spacy_doc'] = amazon_comments['review'].apply(nlp)
 
-# Common Words in Each Segment
-subj_short_sat = amazon_comments[amazon_comments['kmeans_4clust'] == 'Subjective Short Satisfied']
-dissat = amazon_comments[amazon_comments['kmeans_4clust'] == 'Dissatisfied']
-long_satisfied = amazon_comments[amazon_comments['kmeans_4clust'] == 'Long Satisfied']
-neutral = amazon_comments[amazon_comments['kmeans_4clust'] == 'Neutral']
+# Compute a similarity matrix
+similarity_matrix = amazon_comments['spacy_doc'].apply(lambda doc1: amazon_comments['spacy_doc'].apply(lambda doc2: doc1.similarity(doc2)))
 
-# Unigrams
-word_count_func(subj_short_sat, (1,1))[:10]
-word_count_func(dissat, (1,1))[:10]
-word_count_func(neutral, (1,1))[:10]
-word_count_func(long_satisfied, (1,1))[:10]
-
-# Bigrams
-word_count_func(subj_short_sat, (2,2))[:10]
-word_count_func(dissat, (2,2))[:10]
-word_count_func(neutral, (2,2))[:10]
-word_count_func(long_satisfied, (2,2))[:10]
+# Write XSLX
+amazon_comments[['review', 'kmeans_sent_4clust']].to_excel('clustered iphone10 reviews.xlsx')

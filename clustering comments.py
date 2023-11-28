@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import re
 from langdetect import detect
+import emoji
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
 import spacy
@@ -40,7 +41,7 @@ def scraping_review_pages_onebyone(html_file_path):
 reviews = []
 
 for i in range(1, num_pages + 1):
-    path = f'Amazon Customer Reviews Apple iPhone XR, US Version, 128GB, Black - Unlocked (Renewed) P{i}.html'
+    path = f"Amazon Nike Men's Air Max 2017/Amazon Nike Men's Air Max P{i}.html"
     reviews.extend(scraping_review_pages_onebyone(path))
 
 # Creating DataFrame
@@ -76,6 +77,10 @@ more_one_char = amazon_comments['review'].apply(lambda x: len(x) > 1)
 # Filtering reviews
 amazon_comments = amazon_comments[more_one_char]
 
+# Removing reviews that only contain emojies
+is_emoji = amazon_comments['review'].apply(emoji.purely_emoji)
+amazon_comments = amazon_comments[~is_emoji]
+
 # Detecting Language of Review
 amazon_comments['language'] = amazon_comments['review'].apply(lambda x: detect(x))
 
@@ -86,6 +91,9 @@ amazon_comments[amazon_comments['language'] != 'en']
 amazon_comments = amazon_comments[amazon_comments['language'] != 'es']
 
 amazon_comments.drop(columns=['language'], inplace=True)
+
+# Dropping N/A from reivews
+amazon_comments = amazon_comments[amazon_comments['review'] != 'N/A']
 
 # Reset Index
 amazon_comments.reset_index(drop=True, inplace=True)
@@ -98,9 +106,17 @@ amazon_comments.nunique()
 # Location is constant
 amazon_comments.drop(columns=['location'], inplace=True)
 
+# Days since first review
+first_rev_data = amazon_comments['date'].min()
+amazon_comments['first_review_days'] = (amazon_comments['date'] - first_rev_data).dt.days
+
 # Exploratory Data Analysis
 sns.set_theme(style="whitegrid")
 sns.countplot(x = 'rating', data = amazon_comments)
+plt.show()
+
+# Days Since First Review
+sns.histplot(x = 'first_review_days', data = amazon_comments)
 plt.show()
 
 # Replacing u with you
@@ -274,7 +290,7 @@ def dim_reduc(data, method, n_components = None, scale = True, transform = True)
 
 # Word Embedding
 # Doc2Vec
-def dic2vec(reviews_df, column_name):
+def dic2vec(reviews_df, column_name, vector_size):
     # Tokenize the reviews
     tokenized_reviews = [word_tokenize(review.lower()) for review in reviews_df[column_name]]
 
@@ -282,7 +298,7 @@ def dic2vec(reviews_df, column_name):
     tagged_reviews = [TaggedDocument(words=review_words, tags=[str(i)]) for i, review_words in enumerate(tokenized_reviews)]
 
     # Train a Doc2Vec model
-    model = Doc2Vec(tagged_reviews, vector_size=100, window=2, min_count=2, workers=4, epochs=100)
+    model = Doc2Vec(tagged_reviews, vector_size=vector_size, window=2, min_count=2, workers=4, epochs=100)
 
     # Get a vector for each review
     review_vectors = [model.dv[str(i)] for i in range(len(reviews_df))]
@@ -292,7 +308,7 @@ def dic2vec(reviews_df, column_name):
 
     return vectors_df
 
-dic2vec_reviews = dic2vec(amazon_comments, 'review_cleaned_nostop')
+dic2vec_reviews = dic2vec(amazon_comments, 'review_cleaned_nostop', vector_size=30)
 dic2vec_reviews.columns = [f'vec{i}' for i in range(dic2vec_reviews.shape[1])]
 
 clustering_func(data = dic2vec_reviews, cluster_method = 'hierarchical')
@@ -307,13 +323,13 @@ amazon_comments['kmeans_doc2vec_4clust'].value_counts()
 # Dimension Reduction
 dim_reduc(dic2vec_reviews, method='PCA')
 
-# 7 Componenets Cover 90% of Information
-dic2vec_reduced_reviews = dim_reduc(dic2vec_reviews, method='PCA', n_components=7)
+# 4 Componenets Cover 90% of Information
+dic2vec_reduced_reviews = dim_reduc(dic2vec_reviews, method='PCA', n_components=4)
 dic2vec_reduced_reviews = pd.DataFrame(dic2vec_reduced_reviews)
 dic2vec_reduced_reviews.columns = [f'pr{i}' for i in range(dic2vec_reduced_reviews.shape[1])]
 
 # Clustering After PCA
-clustering_func(data = dic2vec_reduced_reviews, cluster_method = 'hierarchical', hi_method='ward')
+clustering_func(data = dic2vec_reduced_reviews, cluster_method = 'hierarchical')
 clustering_func(data = dic2vec_reduced_reviews, cluster_method = 'kmeans')
 
 # Feature: Sentiment Score
@@ -351,8 +367,8 @@ combined_features = amazon_comments[['polarity', 'subjectivity', 'rating']].merg
 clustering_func(combined_features, cluster_method='hierarchical')
 clustering_func(combined_features, cluster_method='kmeans')
 
-# Suggesting 4 Clusters 
-amazon_comments['kmeans_comb_4clust'] = clustering_func(data = combined_features, cluster_method = 'kmeans', k = 4)
+# Suggesting 3 Clusters 
+amazon_comments['kmeans_comb_3clust'] = clustering_func(data = combined_features, cluster_method = 'kmeans', k = 3)
 
 # Comparing Clusters
 def comparing_clusts(clusters):
@@ -375,7 +391,7 @@ def comparing_clusts(clusters):
 
 comparing_clusts('kmeans_doc2vec_4clust')
 comparing_clusts('kmeans_sent_4clust')
-comparing_clusts('kmeans_comb_4clust')
+comparing_clusts('kmeans_comb_3clust')
 
 # Words in each segment
 # Conditions
@@ -430,5 +446,12 @@ amazon_comments['spacy_doc'] = amazon_comments['review'].apply(nlp)
 # Compute a similarity matrix
 similarity_matrix = amazon_comments['spacy_doc'].apply(lambda doc1: amazon_comments['spacy_doc'].apply(lambda doc2: doc1.similarity(doc2)))
 
+# Sorting by Clusters
+sorted_amazon = amazon_comments[['review', 'kmeans_sent_4clust', 'polarity', 'rating']].sort_values('kmeans_sent_4clust')
+sorted_amazon.loc[:, 'review'] = [f'{i}. ' for i in range(1, len(sorted_amazon) + 1)] + sorted_amazon.loc[:, 'review']
+
 # Write XSLX
-amazon_comments[['review', 'kmeans_sent_4clust']].to_excel('clustered iphone10 reviews.xlsx')
+sorted_amazon.to_excel("Amazon Nike Men's Air Max 2017/Airmax Clustered Reviews.xlsx")
+
+# Rating and Polarity Statistics
+sorted_amazon.groupby('kmeans_sent_4clust')[['polarity', 'rating']].agg(['mean', 'std'])

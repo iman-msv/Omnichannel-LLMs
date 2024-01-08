@@ -4,4 +4,4 @@ Our proposal is that omnichannel retailing can be effectively implemented using 
 In this repository, you can find summaries of reviewed articles, Python code that clusters text product reviews from the internet, and a working paper that is still being updated.
 
 ## Working Paper PDF
-You can see the latest version of the paper in **Working-Paper.pdf**
+You can see the latest version of the paper in **Working Paper.pdf**

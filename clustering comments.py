@@ -193,7 +193,9 @@ sns.barplot(x = 'count', y = 'word', data = trigrams[:10])
 plt.show()
 
 # Clustering Function
-def clustering_func(data, cluster_method, k = None, hi_method = 'ward', scale = True, transform = True):
+def clustering_func(data, cluster_method, k = None, 
+                    hi_method = 'ward', scale = True, 
+                    transform = True, product_name = ''):
     # Skewness Reduction
     if transform:
         data = PowerTransformer(method='yeo-johnson').fit_transform(data)
@@ -206,6 +208,9 @@ def clustering_func(data, cluster_method, k = None, hi_method = 'ward', scale = 
         # Choosing Appropriate K
         hierar_link = sc.hierarchy.linkage(data, method=hi_method, metric='euclidean')
         sc.hierarchy.dendrogram(hierar_link)
+        plt.title(product_name + ' Dendrogram')
+        plt.ylabel('Euclidean Distance')
+        plt.xticks([])
         plt.show()
 
         # Return Cluster Labels
@@ -231,10 +236,16 @@ def clustering_func(data, cluster_method, k = None, hi_method = 'ward', scale = 
             'silhouette_avg': silhouette_avg
         })
 
-        sns.pointplot(x = 'num_clusters', y = 'distortions', data = elbow_plot_df)
+        sns.pointplot(x = 'num_clusters', y = 'distortions', data = elbow_plot_df, color = '#333333')
+        plt.xlabel('Number of Clusters')
+        plt.ylabel('Distortion')
+        plt.title(product_name + ' Elbow Plot')
         plt.show()
 
-        sns.pointplot(x = 'num_clusters', y = 'silhouette_avg', data = elbow_plot_df)
+        sns.pointplot(x = 'num_clusters', y = 'silhouette_avg', data = elbow_plot_df,  color = '#333333')
+        plt.xlabel('Number of Clusters')
+        plt.ylabel('Average Silhouette Score')
+        plt.title(product_name + ' Average Silhouette Score')
         plt.show()
 
         if k != None:
@@ -343,10 +354,22 @@ def sent_func(document):
 amazon_comments[['polarity', 'subjectivity']] = amazon_comments['review_cleaned_withstop'].apply(sent_func)
 
 # Sentiment Histograms
-sns.histplot(x = 'polarity', data = amazon_comments)
+bins = np.arange(-0.6, 1.2, 0.2)
+sns.histplot(x = 'polarity', data = amazon_comments, 
+             bins = bins, color = '#333333')
+plt.xlabel('Polarity Score')
+plt.ylabel('Count')
+plt.title('Polarity Score Histogram')
 plt.show()
 
-sns.histplot(x = 'subjectivity', data = amazon_comments)
+bins = np.arange(0, 1.1, 0.1)
+xticks = np.arange(0, 1.1, 0.1)
+sns.histplot(x = 'subjectivity', data = amazon_comments, 
+             bins = bins, color = '#333333')
+plt.xlabel('Subjectivity Score')
+plt.xticks(xticks)
+plt.ylabel('Count')
+plt.title('Subjectivity Score Histogram')
 plt.show()
 
 # Polarity vs. Rating
@@ -354,8 +377,8 @@ sns.boxplot(x = 'rating', y = 'polarity', data = amazon_comments)
 plt.show()
 
 # Clustering with Sentiment
-clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'hierarchical', k = 3)
-clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'kmeans')
+clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'hierarchical', product_name = 'Air Max')
+clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'kmeans', product_name = 'Air Max')
 
 # Suggesting 4 Clusters 
 amazon_comments['kmeans_sent_4clust'] = clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'kmeans', k = 4)

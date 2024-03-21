@@ -18,10 +18,11 @@ from spacytextblob.spacytextblob import SpacyTextBlob
 from scrapy import Selector
 import matplotlib.pyplot as plt
 import seaborn as sns
+from transformers import pipeline
 
 # Loading HTMLs
 # Number of Pages
-num_pages = 10
+num_pages = 50
 
 def scraping_review_pages_onebyone(html_file_path):
     with open(html_file_path, 'r') as file:
@@ -41,82 +42,88 @@ def scraping_review_pages_onebyone(html_file_path):
 reviews = []
 
 for i in range(1, num_pages + 1):
-    path = f"Amazon Nike Men's Air Max 2017/Amazon Nike Men's Air Max P{i}.html"
+    path = f"Amazon Under Armour/Under Armour P{i}.html"
     reviews.extend(scraping_review_pages_onebyone(path))
 
 # Creating DataFrame
-amazon_comments = pd.DataFrame(reviews)
+amazon_reviews = pd.DataFrame(reviews)
 
-amazon_comments.info()
+amazon_reviews.info()
 
 # Filter out Not Verified Purchases
-amazon_comments.dropna(inplace=True)
+amazon_reviews.dropna(inplace=True)
 
 # Rating Must Be Float
-amazon_comments['rating'] = amazon_comments['rating'].apply(lambda x: x[:3]).astype('float16')
+amazon_reviews['rating'] = amazon_reviews['rating'].apply(lambda x: x[:3]).astype('float16')
 
 # Parcing Date and Location. Dates Must Be in Date Type
-amazon_comments['date'] = amazon_comments['location_date'].apply(lambda x: re.findall('Reviewed in (.*) on (.*)', x)[0][1])
-amazon_comments['date'] = pd.to_datetime(amazon_comments['date'])
-amazon_comments['location'] = amazon_comments['location_date'].apply(lambda x: re.findall('Reviewed in (.*) on (.*)', x)[0][0])
-amazon_comments.drop(columns=['location_date'], inplace=True)
+amazon_reviews['date'] = amazon_reviews['location_date'].apply(lambda x: re.findall('Reviewed in (.*) on (.*)', x)[0][1])
+amazon_reviews['date'] = pd.to_datetime(amazon_reviews['date'])
+amazon_reviews['location'] = amazon_reviews['location_date'].apply(lambda x: re.findall('Reviewed in (.*) on (.*)', x)[0][0])
+amazon_reviews.drop(columns=['location_date'], inplace=True)
 
 # Parsing Product Features
 # Size
-amazon_comments['size'] = amazon_comments['purchased_product'].apply(lambda x: re.findall('Size: (\d+)', x[0])[0]).astype('float16')
+amazon_reviews['size'] = amazon_reviews['purchased_product'].apply(lambda x: re.findall('Size: (\d+)', x[0])[0]).astype('float16')
 
 # Color
-amazon_comments['color'] = amazon_comments['purchased_product'].apply(lambda x: re.findall('Color: (.*)', x[1])[0])
+amazon_reviews['color'] = amazon_reviews['purchased_product'].apply(lambda x: re.findall('Color: (.*)', x[1])[0])
 
 # Dropping Original Column
-amazon_comments.drop(columns = ['purchased_product'], inplace=True)
+amazon_reviews.drop(columns = ['purchased_product'], inplace=True)
 
 # Create a condition indicating whether the review contains enough characters
-more_one_char = amazon_comments['review'].apply(lambda x: len(x) > 1)
+more_one_char = amazon_reviews['review'].apply(lambda x: len(x) > 1)
 
 # Filtering reviews
-amazon_comments = amazon_comments[more_one_char]
+amazon_reviews = amazon_reviews[more_one_char]
 
 # Removing reviews that only contain emojies
-is_emoji = amazon_comments['review'].apply(emoji.purely_emoji)
-amazon_comments = amazon_comments[~is_emoji]
+is_emoji = amazon_reviews['review'].apply(emoji.purely_emoji)
+amazon_reviews = amazon_reviews[~is_emoji]
 
 # Detecting Language of Review
-amazon_comments['language'] = amazon_comments['review'].apply(lambda x: detect(x))
+amazon_reviews['language'] = amazon_reviews['review'].apply(lambda x: detect(x))
 
 # Reviews in a language other than English
-amazon_comments[amazon_comments['language'] != 'en']
+amazon_reviews[amazon_reviews['language'] != 'en']
 
 # Filtering espanish
-amazon_comments = amazon_comments[amazon_comments['language'] != 'es']
+amazon_reviews = amazon_reviews[amazon_reviews['language'] != 'es']
 
-amazon_comments.drop(columns=['language'], inplace=True)
+amazon_reviews.drop(columns=['language'], inplace=True)
 
 # Dropping N/A from reivews
-amazon_comments = amazon_comments[amazon_comments['review'] != 'N/A']
+amazon_reviews = amazon_reviews[amazon_reviews['review'] != 'N/A']
 
 # Reset Index
-amazon_comments.reset_index(drop=True, inplace=True)
+amazon_reviews.reset_index(drop=True, inplace=True)
 
 # Inspecting Data
-amazon_comments.head()
-amazon_comments.info()
-amazon_comments.nunique()
+amazon_reviews.head()
+amazon_reviews.info()
+amazon_reviews.nunique()
 
 # Location is constant
-amazon_comments.drop(columns=['location'], inplace=True)
+amazon_reviews.drop(columns=['location'], inplace=True)
+
+# Saving CSV
+# amazon_reviews.to_csv("Amazon Under Armour/Under Armour Men's Tech 2.csv")
+
+# Reading CSV
+amazon_reviews = pd.read_csv("Amazon Nike Men's Air Max 2017/Nike Men Airmax 2017.csv")
 
 # Days since first review
-first_rev_data = amazon_comments['date'].min()
-amazon_comments['first_review_days'] = (amazon_comments['date'] - first_rev_data).dt.days
+first_rev_data = amazon_reviews['date'].min()
+amazon_reviews['first_review_days'] = (amazon_reviews['date'] - first_rev_data).dt.days
 
 # Exploratory Data Analysis
 sns.set_theme(style="whitegrid")
-sns.countplot(x = 'rating', data = amazon_comments)
+sns.countplot(x = 'rating', data = amazon_reviews)
 plt.show()
 
 # Days Since First Review
-sns.histplot(x = 'first_review_days', data = amazon_comments)
+sns.histplot(x = 'first_review_days', data = amazon_reviews)
 plt.show()
 
 # Replacing u with you
@@ -126,7 +133,7 @@ informal_spell = {
     r'\byr\b': 'year'
 }
 
-amazon_comments['review'].replace(informal_spell, regex=True, inplace=True)
+amazon_reviews['review'].replace(informal_spell, regex=True, inplace=True)
 
 # Spacy
 nlp = spacy.load('en_core_web_md')
@@ -141,7 +148,7 @@ def lemma_nostopwords(sentences):
     pre_processed = ' '.join(lemmas)
     return(pre_processed)
 
-amazon_comments['review_cleaned_nostop'] = amazon_comments['review'].apply(lemma_nostopwords)
+amazon_reviews['review_cleaned_nostop'] = amazon_reviews['review'].apply(lemma_nostopwords)
 
 # Without removing stopwords (for sentinemt)
 def lemma_withstopwords(sentences):
@@ -151,13 +158,13 @@ def lemma_withstopwords(sentences):
     pre_processed = ' '.join(lemmas)
     return(pre_processed)
 
-amazon_comments['review_cleaned_withstop'] = amazon_comments['review'].apply(lemma_withstopwords)
+amazon_reviews['review_cleaned_withstop'] = amazon_reviews['review'].apply(lemma_withstopwords)
 
 # Feature: Len of sentences
-amazon_comments['num_words'] = amazon_comments['review_cleaned_nostop'].apply(lambda x: len(x.split(' ')))
+amazon_reviews['num_words'] = amazon_reviews['review_cleaned_nostop'].apply(lambda x: len(x.split(' ')))
 
 # Number of Words Histogram
-sns.histplot(x = 'num_words', data = amazon_comments, binwidth=5)
+sns.histplot(x = 'num_words', data = amazon_reviews, binwidth=5)
 plt.xlabel('Number of Words in a Review')
 plt.show()
 
@@ -178,17 +185,17 @@ def word_count_func(data, ngrams):
     return(word_counts_df)
 
 # Unigram
-unigrams = word_count_func(amazon_comments, (1,1))
+unigrams = word_count_func(amazon_reviews, (1,1))
 sns.barplot(x = 'count', y = 'word', data = unigrams[:10])
 plt.show()
 
 # Bigrams
-bigrams = word_count_func(amazon_comments, (2,2))
+bigrams = word_count_func(amazon_reviews, (2,2))
 sns.barplot(x = 'count', y = 'word', data = bigrams[:10])
 plt.show()
 
 # Trigrams
-trigrams = word_count_func(amazon_comments, (3,3))
+trigrams = word_count_func(amazon_reviews, (3,3))
 sns.barplot(x = 'count', y = 'word', data = trigrams[:10])
 plt.show()
 
@@ -319,17 +326,17 @@ def dic2vec(reviews_df, column_name, vector_size):
 
     return vectors_df
 
-dic2vec_reviews = dic2vec(amazon_comments, 'review_cleaned_nostop', vector_size=30)
+dic2vec_reviews = dic2vec(amazon_reviews, 'review_cleaned_nostop', vector_size=30)
 dic2vec_reviews.columns = [f'vec{i}' for i in range(dic2vec_reviews.shape[1])]
 
 clustering_func(data = dic2vec_reviews, cluster_method = 'hierarchical')
 clustering_func(data = dic2vec_reviews, cluster_method = 'kmeans')
 
 # Suggest 3 Clusters
-amazon_comments['kmeans_doc2vec_4clust'] = clustering_func(data = dic2vec_reviews, cluster_method = 'kmeans', k = 4)
+amazon_reviews['kmeans_doc2vec_4clust'] = clustering_func(data = dic2vec_reviews, cluster_method = 'kmeans', k = 4)
 
 # Number of Cases in Each Cluster
-amazon_comments['kmeans_doc2vec_4clust'].value_counts()
+amazon_reviews['kmeans_doc2vec_4clust'].value_counts()
 
 # Dimension Reduction
 dim_reduc(dic2vec_reviews, method='PCA')
@@ -343,7 +350,13 @@ dic2vec_reduced_reviews.columns = [f'pr{i}' for i in range(dic2vec_reduced_revie
 clustering_func(data = dic2vec_reduced_reviews, cluster_method = 'hierarchical')
 clustering_func(data = dic2vec_reduced_reviews, cluster_method = 'kmeans')
 
-# Feature: Sentiment Score
+# Feature: Sentiment Score with BERT
+bert_model = 'nlptown/bert-base-multilingual-uncased-sentiment'
+bert_classifier = pipeline('text-classification', model=bert_model)
+bart_base_preds = bert_classifier(amazon_reviews['review'].to_list())
+amazon_reviews['bert_label_num'] = [int(pred['label'][:1]) for pred in bart_base_preds]
+amazon_reviews['bert_score'] = [round(pred['score'], 3) for pred in bart_base_preds]
+
 nlp_added = spacy.load('en_core_web_md')
 nlp_added.add_pipe('spacytextblob')
 
@@ -351,11 +364,11 @@ def sent_func(document):
     doc = nlp_added(document)
     return pd.Series([doc._.blob.polarity, doc._.blob.subjectivity])
 
-amazon_comments[['polarity', 'subjectivity']] = amazon_comments['review_cleaned_withstop'].apply(sent_func)
+amazon_reviews[['polarity', 'subjectivity']] = amazon_reviews['review_cleaned_withstop'].apply(sent_func)
 
 # Sentiment Histograms
 bins = np.arange(-0.6, 1.2, 0.2)
-sns.histplot(x = 'polarity', data = amazon_comments, 
+sns.histplot(x = 'polarity', data = amazon_reviews, 
              bins = bins, color = '#333333')
 plt.xlabel('Polarity Score')
 plt.ylabel('Count')
@@ -364,7 +377,7 @@ plt.show()
 
 bins = np.arange(0, 1.1, 0.1)
 xticks = np.arange(0, 1.1, 0.1)
-sns.histplot(x = 'subjectivity', data = amazon_comments, 
+sns.histplot(x = 'subjectivity', data = amazon_reviews, 
              bins = bins, color = '#333333')
 plt.xlabel('Subjectivity Score')
 plt.xticks(xticks)
@@ -373,43 +386,43 @@ plt.title('Subjectivity Score Histogram')
 plt.show()
 
 # Polarity vs. Rating
-sns.boxplot(x = 'rating', y = 'polarity', data = amazon_comments)
+sns.boxplot(x = 'rating', y = 'polarity', data = amazon_reviews)
 plt.show()
 
 # Clustering with Sentiment
-clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'hierarchical', product_name = 'Air Max')
-clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'kmeans', product_name = 'Air Max')
+clustering_func(data = amazon_reviews[['polarity', 'bert_label_num']], cluster_method = 'hierarchical', product_name = 'Air Max')
+clustering_func(data = amazon_reviews[['polarity', 'bert_label_num']], cluster_method = 'kmeans', product_name = 'Air Max')
 
-# Suggesting 4 Clusters 
-amazon_comments['kmeans_sent_4clust'] = clustering_func(data = amazon_comments[['polarity', 'subjectivity', 'rating']], cluster_method = 'kmeans', k = 4)
+# Suggesting 3 Clusters 
+amazon_reviews['kmeans_sent_3clust'] = clustering_func(data = amazon_reviews[['polarity', 'rating']], cluster_method = 'kmeans', k = 3)
 
 # Combined Features
-combined_features = amazon_comments[['polarity', 'subjectivity', 'rating']].merge(dic2vec_reviews, left_index=True, right_index=True)
+combined_features = amazon_reviews[['polarity', 'subjectivity', 'rating']].merge(dic2vec_reviews, left_index=True, right_index=True)
 
 # Clustering with Combined Features
 clustering_func(combined_features, cluster_method='hierarchical')
 clustering_func(combined_features, cluster_method='kmeans')
 
 # Suggesting 3 Clusters 
-amazon_comments['kmeans_comb_3clust'] = clustering_func(data = combined_features, cluster_method = 'kmeans', k = 3)
+amazon_reviews['kmeans_comb_3clust'] = clustering_func(data = combined_features, cluster_method = 'kmeans', k = 3)
 
 # Comparing Clusters
 def comparing_clusts(clusters):
     # Comparing Clusters
-    print(amazon_comments[clusters].value_counts())
-    print(amazon_comments.groupby(clusters)['rating'].value_counts(normalize=True))
-    print(amazon_comments.groupby(clusters)['polarity'].mean())
+    print(amazon_reviews[clusters].value_counts())
+    print(amazon_reviews.groupby(clusters)['rating'].value_counts(normalize=True))
+    print(amazon_reviews.groupby(clusters)['polarity'].mean())
 
-    sns.displot(x = 'polarity', data = amazon_comments, kind='kde', hue = clusters)
+    sns.displot(x = 'polarity', data = amazon_reviews, kind='kde', hue = clusters)
     plt.show()
 
-    sns.boxplot(x = clusters, y = 'polarity', data = amazon_comments)
+    sns.boxplot(x = clusters, y = 'polarity', data = amazon_reviews)
     plt.show()
 
-    sns.displot(x = 'subjectivity', data = amazon_comments, kind='kde', hue = clusters)
+    sns.displot(x = 'subjectivity', data = amazon_reviews, kind='kde', hue = clusters)
     plt.show()
 
-    sns.displot(x = 'num_words', data = amazon_comments, kind='kde', hue = clusters)
+    sns.displot(x = 'num_words', data = amazon_reviews, kind='kde', hue = clusters)
     plt.show()
 
 comparing_clusts('kmeans_doc2vec_4clust')
@@ -418,59 +431,48 @@ comparing_clusts('kmeans_comb_3clust')
 
 # Words in each segment
 # Conditions
-group1 = amazon_comments['kmeans_sent_4clust'] == 0
-group2 = amazon_comments['kmeans_sent_4clust'] == 1
-group3 = amazon_comments['kmeans_sent_4clust'] == 2
-group4 = amazon_comments['kmeans_sent_4clust'] == 3
+group1 = amazon_reviews['kmeans_sent_3clust'] == 0
+group2 = amazon_reviews['kmeans_sent_3clust'] == 1
+group3 = amazon_reviews['kmeans_sent_3clust'] == 2
 
 # Unigram Group 1
-unigrams = word_count_func(amazon_comments[group1], (1,1))
+unigrams = word_count_func(amazon_reviews[group1], (1,1))
 sns.barplot(x = 'count', y = 'word', data = unigrams[:10])
 plt.show()
 
 # Unigram Group 2
-unigrams = word_count_func(amazon_comments[group2], (1,1))
+unigrams = word_count_func(amazon_reviews[group2], (1,1))
 sns.barplot(x = 'count', y = 'word', data = unigrams[:10])
 plt.show()
 
 # Unigram Group 3
-unigrams = word_count_func(amazon_comments[group3], (1,1))
-sns.barplot(x = 'count', y = 'word', data = unigrams[:10])
-plt.show()
-
-# Unigram Group 4
-unigrams = word_count_func(amazon_comments[group4], (1,1))
+unigrams = word_count_func(amazon_reviews[group3], (1,1))
 sns.barplot(x = 'count', y = 'word', data = unigrams[:10])
 plt.show()
 
 # Bigrams Group 1
-bigrams = word_count_func(amazon_comments[group1], (2,2))
+bigrams = word_count_func(amazon_reviews[group1], (2,2))
 sns.barplot(x = 'count', y = 'word', data = bigrams[:10])
 plt.show()
 
 # Bigrams Group 2
-bigrams = word_count_func(amazon_comments[group2], (2,2))
+bigrams = word_count_func(amazon_reviews[group2], (2,2))
 sns.barplot(x = 'count', y = 'word', data = bigrams[:10])
 plt.show()
 
 # Bigrams Group 3
-bigrams = word_count_func(amazon_comments[group3], (2,2))
-sns.barplot(x = 'count', y = 'word', data = bigrams[:10])
-plt.show()
-
-# Bigrams Group 4
-bigrams = word_count_func(amazon_comments[group4], (2,2))
+bigrams = word_count_func(amazon_reviews[group3], (2,2))
 sns.barplot(x = 'count', y = 'word', data = bigrams[:10])
 plt.show()
 
 # Similarity
-amazon_comments['spacy_doc'] = amazon_comments['review'].apply(nlp)
+amazon_reviews['spacy_doc'] = amazon_reviews['review'].apply(nlp)
 
 # Compute a similarity matrix
-similarity_matrix = amazon_comments['spacy_doc'].apply(lambda doc1: amazon_comments['spacy_doc'].apply(lambda doc2: doc1.similarity(doc2)))
+similarity_matrix = amazon_reviews['spacy_doc'].apply(lambda doc1: amazon_reviews['spacy_doc'].apply(lambda doc2: doc1.similarity(doc2)))
 
 # Sorting by Clusters
-sorted_amazon = amazon_comments[['review', 'kmeans_sent_4clust', 'polarity', 'rating']].sort_values('kmeans_sent_4clust')
+sorted_amazon = amazon_reviews[['review', 'kmeans_sent_3clust']].sort_values('kmeans_sent_3clust')
 sorted_amazon.loc[:, 'review'] = [f'{i}. ' for i in range(1, len(sorted_amazon) + 1)] + sorted_amazon.loc[:, 'review']
 
 # Write XSLX
